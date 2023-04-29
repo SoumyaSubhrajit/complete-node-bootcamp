@@ -1,7 +1,7 @@
 
 const express = require('express');
 const { authController, protect, signup, login, forgotPassword, resetPassword, updatePassword } = require('../controllers/authController')
-const { getAllUsers, createUsers, getUsers, updateUsers, deleteUsers } = require('../controllers/usersController')
+const { getAllUsers, createUsers, getUsers, updateUsers, deleteUsers, updateMe } = require('../controllers/usersController')
 
 
 const router = express.Router();
@@ -18,6 +18,9 @@ router
 
 router
   .patch('/updateMyPassword', protect, updatePassword)
+
+router
+  .patch('/updateMe', protect, updateMe)
 
 // Users....
 router

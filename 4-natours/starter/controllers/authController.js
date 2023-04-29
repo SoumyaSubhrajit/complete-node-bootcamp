@@ -202,4 +202,3 @@ exports.updatePassword = async (req, res, next) => {
 }
 
 
-// Checking is valid is not?
