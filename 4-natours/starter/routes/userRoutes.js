@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { authController, protect, signup, login, forgotPassword, resetPassword } = require('../controllers/authController')
+const { authController, protect, signup, login, forgotPassword, resetPassword, updatePassword } = require('../controllers/authController')
 const { getAllUsers, createUsers, getUsers, updateUsers, deleteUsers } = require('../controllers/usersController')
 
 
@@ -14,7 +14,10 @@ router
 
 router
   .post('/forgotPassword', forgotPassword)
-// .patch('/resetPassword/:token', resetPassword)
+  .patch('/resetPassword/:token', resetPassword)
+
+router
+  .patch('/updateMyPassword', protect, updatePassword)
 
 // Users....
 router
@@ -22,6 +25,7 @@ router
   .get(getAllUsers)
   .post(createUsers)
 
+// NO contribution is showing it is just for the showCase..
 
 router
   .route('/:id')
