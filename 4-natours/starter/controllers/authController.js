@@ -200,3 +200,6 @@ exports.updatePassword = async (req, res, next) => {
   // 4) Log user in , send a token;
   createSendToken(user, 200, res);
 }
+
+
+// Checking is valid is not?
