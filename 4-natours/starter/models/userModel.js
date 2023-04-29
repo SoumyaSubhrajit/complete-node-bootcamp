@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema({
 })
 
 // SECURE PASSWORD....
-
 userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
@@ -98,6 +97,13 @@ userSchema.methods.createPasswordReset = function () {
 
   return resetToken
 }
+
+// ADDING THE DELETING MID FUNCTION..
+userSchema.pre(/^find/, function (next) {
+  // This points to the cureent query..
+  this.find({ active: { $ne: false } })
+  next();
+})
 
 
 const User = mongoose.model('User', userSchema)

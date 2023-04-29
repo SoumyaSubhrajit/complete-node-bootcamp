@@ -39,7 +39,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
 
 // ADDING THE DELETE USER FUNCTIONALITY..
-exports.delete = catchAsync(async (req, res, next) => {
+exports.deleteMe = catchAsync(async (req, res, next) => {
   // Finding user with id..
   await User.findByIdAndUpdate(req.user.id, { active: false })
 
