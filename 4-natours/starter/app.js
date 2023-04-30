@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
-
+const helmet = require('helmet');
 const app = express();
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController')
@@ -10,6 +10,8 @@ const userRouter = require('./routes/userRoutes');
 const rateLimit = require('express-rate-limit');
 //This is a middle-ware it will in the middle of req and res.
 
+
+app.use(helmet());
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
