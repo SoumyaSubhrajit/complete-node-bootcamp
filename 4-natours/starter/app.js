@@ -7,7 +7,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController')
 const tourRouter = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes');
-
+const rateLimit = require('express-rate-limit');
 //This is a middle-ware it will in the middle of req and res.
 
 console.log(process.env.NODE_ENV);
@@ -15,6 +15,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// API LIMITING..
+const limit = rateLimit({
+  max: 2,
+  windowMs: 60 * 60 * 1000,
+  message: 'You are pass the limit of incoming request! try again later.'
+})
+app.use('/api', limit)
 
 app.use(express.json());
 // This will a simple route system to get their..
