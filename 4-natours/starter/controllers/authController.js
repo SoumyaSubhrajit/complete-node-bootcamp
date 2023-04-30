@@ -16,7 +16,25 @@ const signToken = id => jwt.sign({ id }, process.env.JWT_SECERT, { expiresIn: pr
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
 
-  res.status(201).json({
+  const cookiesOption = {
+    expires:
+      new Date(
+        Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+    httpOnly: true
+  }
+  // This is waork for the production ..
+  if (process.env.NODE_ENV === 'production') {
+    cookiesOption.secure = true;
+  }
+  // Sending the cookie to the client..
+
+  res.cookie('jwt', token, cookiesOption);
+
+  // Hide the password in the output.
+  user.password = undefined
+
+  res.status(statusCode).json({
     status: "Success",
     token,
     data: {
