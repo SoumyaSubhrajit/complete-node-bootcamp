@@ -83,6 +83,31 @@ const tourScheme = new mongoose.Schema({
   },
   // Ex -> "2021-01-23" it will parese the date by mongo.
   startDates: [Date],
+  startLocation: {
+    // GeoJSON..
+    type: {
+      type: String,
+      default: 'Point',
+      enum: ['Point']
+    },
+    coordinates: [Number],
+    address: String,
+    description: String
+  },
+  // It Create brand new document in the parent document..
+  locations: [
+    {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      day: Number
+    }
+  ],
 },
   // virtial propety are being added in to the database..
   {

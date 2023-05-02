@@ -9,23 +9,41 @@ const tourRouter = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes');
 const rateLimit = require('express-rate-limit');
 //This is a middle-ware it will in the middle of req and res.
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean')
+const hpp = require('hpp');
 
-
+// ADDITONAL SECURITYIN HEADER..
 app.use(helmet());
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Data sanitization against NoSQL query injextion..
+app.use(mongoSanitize());
+// Data sanitization against XSS.
+app.use(xss())
+
+// clear-up the queryString..
+app.use(hpp({
+  whitelist: [
+    'default',
+    'price',
+    'mazGroupSizw'
+  ]
+}))
+
+
 // API LIMITING..
 const limit = rateLimit({
-  max: 2,
+  max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'You are pass the limit of incoming request! try again later.'
 })
 app.use('/api', limit)
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 // This will a simple route system to get their..
 app.use(express.static(`${__dirname}/public`))
 
