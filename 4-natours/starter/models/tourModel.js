@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-
+const User = require('./userModel')
 const validator = require('validator')
 
 const tourScheme = new mongoose.Schema({
@@ -108,6 +108,12 @@ const tourScheme = new mongoose.Schema({
       day: Number
     }
   ],
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    }
+  ]
 },
   // virtial propety are being added in to the database..
   {
@@ -135,6 +141,14 @@ tourScheme.pre('save', function (next) {
   next();
 })
 
+// p-3
+tourScheme.pre('save', async function (next) {
+  const guidesPromises = this.guides.map(async id => await User.findById(id));
+  this.guides = await Promise.all(guidesPromises);
+  next();
+});
+
+
 // post() - opration
 tourScheme.post('save', (doc, next) => {
   console.log("This is the documet that is added to the DB");
@@ -161,7 +175,7 @@ tourScheme.post(/^find/, function (docs, next) {
 
 // AGGREGATION MIDDILEWARE...
 tourScheme.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match })
+  this.pipeline().unshift({ $matc: { secretTour: { $ne: true } } })
   console.log(this.pipeline());
   next();
 
@@ -170,5 +184,21 @@ tourScheme.pre('aggregate', function (next) {
 
 // mongoose.model('Tour', tourScheme); ---> Tour is the model name.
 const Tour = mongoose.model('Tour', tourScheme);
+
+try {
+  const tour = await Tour.create(req.body);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour
+    }
+  });
+} catch (err) {
+  console.log(err.message);
+  res.status(400).json({
+    status: 'error',
+    message: err.message
+  });
+}
 
 module.exports = Tour;
